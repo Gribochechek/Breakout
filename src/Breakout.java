@@ -42,7 +42,7 @@ public class Breakout extends GraphicsProgram {
 	/** Separation between bricks */
 	private static final int BRICK_SEP = 4;
 
-	/** Width of a brick */
+	/** Width of a brick. По моему тут должно быть NBRICKS_PER_ROW+1 */
 	private static final int BRICK_WIDTH = (WIDTH - (NBRICKS_PER_ROW - 1) * BRICK_SEP) / NBRICKS_PER_ROW;
 
 	/** Height of a brick */
@@ -62,22 +62,64 @@ public class Breakout extends GraphicsProgram {
 	private double vx, vy;
 	private RandomGenerator rgen = RandomGenerator.getInstance();
 
+	private GRect paddle;
+
 	/* Method: run() */
 	/** Runs the Breakout program. */
 	public void run() {
 		this.setSize(WIDTH, HEIGHT);
-		for (int i = 0; i <= NTURNS; i++) {
+		for (int i = 0; i < NTURNS; i++) {
 			waitForClick();
 			drawBall();
 			ballSpeed();
 			while (ball != null) {
 				moveBall();
+				checkForCollisions();
 				pause(DELAY);
 				if (ball.getY() >= getHeight()) {
 					ball = null;
 				}
 			}
 		}
+	}
+
+	/**
+	 * метод реализации столкновений с объектами. Пока нет реализации ракетки
+	 * (paddle) - будет выдавать ошибку
+	 */
+	private void checkForCollisions() {
+		GObject collObj = getCollidingObject();
+		if (collObj == paddle) {
+			vy = -vy; 
+			if (vx > 0 && (ball.getX() + BALL_RADIUS) < (paddle.getX() + PADDLE_WIDTH / 2)) {
+				vx = -vx;
+			}
+			if (vx < 0 && (ball.getX() + BALL_RADIUS) > (paddle.getX() + PADDLE_WIDTH / 2)) {
+				vx = -vx;
+			}
+
+		} else if (collObj != null) {
+			remove(collObj);
+			vy = -vy;
+		}
+
+	}
+
+	/** метод возвращает объект, с которым столкнулся мяч */
+	private GObject getCollidingObject() {
+		GObject obj = getElementAt(ball.getX(), ball.getY());
+
+		if (obj == null) {
+			obj = getElementAt(ball.getX() + 2 * BALL_RADIUS, ball.getY());
+		}
+		if (obj == null) {
+			obj = getElementAt(ball.getX(), ball.getY() + 2 * BALL_RADIUS);
+		}
+		if (obj == null) {
+			obj = getElementAt(ball.getX() + 2 * BALL_RADIUS, ball.getY() + 2 * BALL_RADIUS);
+		}
+
+		return obj;
 	}
 
 	private void drawBall() {
@@ -98,10 +140,12 @@ public class Breakout extends GraphicsProgram {
 		ball.move(vx, vy);
 		if (ball.getX() + BALL_RADIUS * 2 >= getWidth() || ball.getX() <= 0) {
 			vx = -vx;
-			// Для перевірки всього поля додати після 0 ось це - || ball.getY() +
+			// Для перевірки всього поля додати після 0 ось це - || ball.getY()
+			// +
 			// BALL_RADIUS * 2 >= getHeight()
 		} else if (ball.getY() <= 0) {
 			vy = -vy;
 		}
 	}
+
 }
