@@ -68,6 +68,9 @@ public class Breakout extends GraphicsProgram {
 	/** Runs the Breakout program. */
 	public void run() {
 		this.setSize(WIDTH, HEIGHT);
+		addMouseListeners();
+		createBricks();
+		createPaddle();
 		for (int i = 0; i < NTURNS; i++) {
 			waitForClick();
 			drawBall();
@@ -90,7 +93,7 @@ public class Breakout extends GraphicsProgram {
 	private void checkForCollisions() {
 		GObject collObj = getCollidingObject();
 		if (collObj == paddle) {
-			vy = -vy; 
+			vy = -vy;
 			if (vx > 0 && (ball.getX() + BALL_RADIUS) < (paddle.getX() + PADDLE_WIDTH / 2)) {
 				vx = -vx;
 			}
@@ -145,6 +148,54 @@ public class Breakout extends GraphicsProgram {
 			// BALL_RADIUS * 2 >= getHeight()
 		} else if (ball.getY() <= 0) {
 			vy = -vy;
+		}
+	}
+
+	private void createBricks() {
+
+		for (int i = 0; i < NBRICK_ROWS; i++) {
+			for (int j = 0; j < NBRICKS_PER_ROW; j++) {
+				int x = j * (BRICK_WIDTH + BRICK_SEP) + BRICK_SEP / 2;
+				int y = i * (BRICK_HEIGHT + BRICK_SEP) + BRICK_Y_OFFSET;
+				GRect rect = new GRect(x, y, BRICK_WIDTH, BRICK_HEIGHT);
+				rect.setFilled(true);
+				if (i == 0 | i == 1) {
+					rect.setFillColor(Color.RED);
+					rect.setColor(Color.RED);
+				}
+				if (i == 2 | i == 3) {
+					rect.setFillColor(Color.ORANGE);
+					rect.setColor(Color.ORANGE);
+				}
+				if (i == 4 | i == 5) {
+					rect.setFillColor(Color.YELLOW);
+					rect.setColor(Color.YELLOW);
+				}
+				if (i == 6 | i == 7) {
+					rect.setFillColor(Color.GREEN);
+					rect.setColor(Color.GREEN);
+				}
+				if (i == 8 | i == 9) {
+					rect.setFillColor(Color.CYAN);
+					rect.setColor(Color.CYAN);
+				}
+				add(rect);
+			}
+		}
+	}
+
+	private void createPaddle() {
+
+		paddle = new GRect((WIDTH - PADDLE_WIDTH) / 2, HEIGHT - PADDLE_Y_OFFSET, PADDLE_WIDTH, PADDLE_HEIGHT);
+		paddle.setFilled(true);
+		paddle.setFillColor(Color.BLACK);
+		add(paddle);
+	}
+
+	public void mouseMoved(MouseEvent e) {
+
+		if (e.getX() >= PADDLE_WIDTH / 2 & e.getX() < WIDTH - PADDLE_WIDTH / 2) {
+			paddle.setLocation(e.getX() - PADDLE_WIDTH / 2, HEIGHT - PADDLE_Y_OFFSET);
 		}
 	}
 
