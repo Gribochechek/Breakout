@@ -43,8 +43,7 @@ public class Breakout extends GraphicsProgram {
 	private static final int BRICK_SEP = 4;
 
 	/**
-	 * Width of a brick. По моему тут должно быть
-	 * NBRICKS_PER_ROW+1
+	 * Width of a brick. По моему тут должно быть NBRICKS_PER_ROW+1
 	 */
 	private static final int BRICK_WIDTH = (WIDTH - (NBRICKS_PER_ROW - 1) * BRICK_SEP) / NBRICKS_PER_ROW;
 
@@ -66,26 +65,57 @@ public class Breakout extends GraphicsProgram {
 	private RandomGenerator rgen = RandomGenerator.getInstance();
 
 	private GRect paddle;
+	private int bricks = NBRICKS_PER_ROW * NBRICK_ROWS;
+	private int turns = NTURNS;
+	private GLabel showBricks;
+	private GLabel showTurns;
 
 	/* Method: run() */
 	/** Runs the Breakout program. */
 	public void run() {
 		this.setSize(WIDTH, HEIGHT);
-		addMouseListeners();
-		for (int i = 0; i < NTURNS; i++) {
-			setup();
+		setup();
+		GLabel start = new GLabel("Для старта нажмите лкм",  WIDTH / 2 - 60, HEIGHT / 2-BALL_RADIUS*3);
+		for (int i = NTURNS; i > 0; i--) {
+			if(bricks>0){
+			drawBall();
+			add(start);
+			waitForClick();
+			remove(start);
 			playGame();
-			removeAll();
+			}
+			else {
+				break;
+			}
+
 		}
+		gameOver();
+	}
+
+	private void gameOver() {
+		GLabel win = new GLabel("Вы выиграли", WIDTH / 2 - 50, HEIGHT / 2);
+		GLabel lose = new GLabel("Попытки закончились. Вы проиграли", WIDTH / 2 - 110, HEIGHT / 2);
+		if (bricks == 0)
+			add(win);
+		if (turns == 0)
+			add(lose);
+		
 	}
 
 	private void playGame() {
-		while (ball != null) {
+		while (ball!=null) {
+			if(bricks==0) {
+				remove(ball);
+				break;
+			}
 			moveBall();
 			checkForCollisions();
 			pause(DELAY);
 			if (ball.getY() >= getHeight()) {
+				remove(ball);
 				ball = null;
+				turns--;
+				showTurns.setLabel("Осталось попыток: "+turns);
 			}
 		}
 	}
@@ -93,15 +123,19 @@ public class Breakout extends GraphicsProgram {
 	private void setup() {
 		createBricks();
 		createPaddle();
-		drawBall();
-		waitForClick();
+		showBricks = new GLabel("Осталось кирпичей: " + bricks);
+		showBricks.setFont("Times New Roman-10");
+		showTurns = new GLabel("Осталось попыток: " + turns);
+		showTurns.setFont("Times New Roman-10");
+		add(showBricks, 10, 10);
+		add(showTurns, 10, 30);
+		addMouseListeners();
 		ballSpeed();
+
 	}
 
 	/**
-	 * метод реализации столкновений с
-	 * объектами. Пока нет реализации ракетки
-	 * (paddle) - будет выдавать ошибку
+	 * method for collisions
 	 */
 	private void checkForCollisions() {
 		GObject collObj = getCollidingObject();
@@ -114,16 +148,17 @@ public class Breakout extends GraphicsProgram {
 				vx = -vx;
 			}
 
-		} else if (collObj != null) {
+		} else if (collObj != null && collObj != showBricks && collObj != showTurns) {
 			remove(collObj);
+			bricks--;
+			showBricks.setLabel("Осталось кирпичей: " + bricks);
 			vy = -vy;
 		}
 
 	}
 
 	/**
-	 * метод возвращает объект, с которым
-	 * столкнулся мяч
+	 * returns collide object
 	 */
 	private GObject getCollidingObject() {
 		GObject obj = getElementAt(ball.getX(), ball.getY());
