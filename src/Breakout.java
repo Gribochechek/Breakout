@@ -42,7 +42,10 @@ public class Breakout extends GraphicsProgram {
 	/** Separation between bricks */
 	private static final int BRICK_SEP = 4;
 
-	/** Width of a brick. По моему тут должно быть NBRICKS_PER_ROW+1 */
+	/**
+	 * Width of a brick. По моему тут должно быть
+	 * NBRICKS_PER_ROW+1
+	 */
 	private static final int BRICK_WIDTH = (WIDTH - (NBRICKS_PER_ROW - 1) * BRICK_SEP) / NBRICKS_PER_ROW;
 
 	/** Height of a brick */
@@ -69,25 +72,35 @@ public class Breakout extends GraphicsProgram {
 	public void run() {
 		this.setSize(WIDTH, HEIGHT);
 		addMouseListeners();
-		createBricks();
-		createPaddle();
 		for (int i = 0; i < NTURNS; i++) {
-			waitForClick();
-			drawBall();
-			ballSpeed();
-			while (ball != null) {
-				moveBall();
-				checkForCollisions();
-				pause(DELAY);
-				if (ball.getY() >= getHeight()) {
-					ball = null;
-				}
+			setup();
+			playGame();
+			removeAll();
+		}
+	}
+
+	private void playGame() {
+		while (ball != null) {
+			moveBall();
+			checkForCollisions();
+			pause(DELAY);
+			if (ball.getY() >= getHeight()) {
+				ball = null;
 			}
 		}
 	}
 
+	private void setup() {
+		createBricks();
+		createPaddle();
+		drawBall();
+		waitForClick();
+		ballSpeed();
+	}
+
 	/**
-	 * метод реализации столкновений с объектами. Пока нет реализации ракетки
+	 * метод реализации столкновений с
+	 * объектами. Пока нет реализации ракетки
 	 * (paddle) - будет выдавать ошибку
 	 */
 	private void checkForCollisions() {
@@ -108,7 +121,10 @@ public class Breakout extends GraphicsProgram {
 
 	}
 
-	/** метод возвращает объект, с которым столкнулся мяч */
+	/**
+	 * метод возвращает объект, с которым
+	 * столкнулся мяч
+	 */
 	private GObject getCollidingObject() {
 		GObject obj = getElementAt(ball.getX(), ball.getY());
 
@@ -143,9 +159,7 @@ public class Breakout extends GraphicsProgram {
 		ball.move(vx, vy);
 		if (ball.getX() + BALL_RADIUS * 2 >= getWidth() || ball.getX() <= 0) {
 			vx = -vx;
-			// Для перевірки всього поля додати після 0 ось це - || ball.getY()
-			// +
-			// BALL_RADIUS * 2 >= getHeight()
+			// || ball.getY() + BALL_RADIUS * 2 >= getHeight()
 		} else if (ball.getY() <= 0) {
 			vy = -vy;
 		}
