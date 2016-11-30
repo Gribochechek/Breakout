@@ -69,6 +69,7 @@ public class Breakout extends GraphicsProgram {
 	private int turns = NTURNS;
 	private GLabel showBricks;
 	private GLabel showTurns;
+	AudioClip bounceClip = MediaTools.loadAudioClip("bounce.au");
 
 	/* Method: run() */
 	/** Runs the Breakout program. */
@@ -110,7 +111,7 @@ public class Breakout extends GraphicsProgram {
 			}
 			moveBall();
 			checkForCollisions();
-			pause(DELAY);
+			pause(speed());
 			if (ball.getY() >= getHeight()) {
 				remove(ball);
 				ball = null;
@@ -118,6 +119,15 @@ public class Breakout extends GraphicsProgram {
 				showTurns.setLabel("Attempts left: "+turns);
 			}
 		}
+	}
+
+	private double speed() {
+		if(bricks>NBRICKS_PER_ROW * NBRICK_ROWS*0.8) return DELAY;
+		else if (bricks>NBRICKS_PER_ROW * NBRICK_ROWS*0.6) return DELAY-1;
+		else if (bricks>NBRICKS_PER_ROW * NBRICK_ROWS*0.4) return DELAY-2;
+		else if (bricks>NBRICKS_PER_ROW * NBRICK_ROWS*0.2) return DELAY-3;
+		else if (bricks>NBRICKS_PER_ROW * NBRICK_ROWS*0.1) return DELAY-4;
+		else return DELAY-5;
 	}
 
 	private void setup() {
@@ -140,6 +150,7 @@ public class Breakout extends GraphicsProgram {
 	private void checkForCollisions() {
 		GObject collObj = getCollidingObject();
 		if (collObj == paddle) {
+			bounceClip.play();
 			vy = -vy;
 			if (vx > 0 && (ball.getX() + BALL_RADIUS) < (paddle.getX() + PADDLE_WIDTH / 2)) {
 				vx = -vx;
@@ -150,6 +161,7 @@ public class Breakout extends GraphicsProgram {
 
 		} else if (collObj != null && collObj != showBricks && collObj != showTurns) {
 			remove(collObj);
+			bounceClip.play();
 			bricks--;
 			showBricks.setLabel("Bricks left: " + bricks);
 			vy = -vy;
