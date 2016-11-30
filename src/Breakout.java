@@ -1,4 +1,4 @@
-
+﻿
 /*
  * File: Breakout.java
  * -------------------
@@ -43,7 +43,7 @@ public class Breakout extends GraphicsProgram {
 	private static final int BRICK_SEP = 4;
 
 	/**
-	 * Width of a brick. По моему тут должно быть NBRICKS_PER_ROW+1
+	 * Width of a brick. 
 	 */
 	private static final int BRICK_WIDTH = (WIDTH - (NBRICKS_PER_ROW - 1) * BRICK_SEP) / NBRICKS_PER_ROW;
 
@@ -75,7 +75,7 @@ public class Breakout extends GraphicsProgram {
 	public void run() {
 		this.setSize(WIDTH, HEIGHT);
 		setup();
-		GLabel start = new GLabel("Для старта нажмите лкм",  WIDTH / 2 - 60, HEIGHT / 2-BALL_RADIUS*3);
+		GLabel start = new GLabel("Press LEFT MOUSE BUTTON for start",  WIDTH / 2 - 60, HEIGHT / 2-BALL_RADIUS*3);
 		for (int i = NTURNS; i > 0; i--) {
 			if(bricks>0){
 			drawBall();
@@ -93,8 +93,8 @@ public class Breakout extends GraphicsProgram {
 	}
 
 	private void gameOver() {
-		GLabel win = new GLabel("Вы выиграли", WIDTH / 2 - 50, HEIGHT / 2);
-		GLabel lose = new GLabel("Попытки закончились. Вы проиграли", WIDTH / 2 - 110, HEIGHT / 2);
+		GLabel win = new GLabel("You win", WIDTH / 2 - 50, HEIGHT / 2);
+		GLabel lose = new GLabel("No more attempts. You lose", WIDTH / 2 - 110, HEIGHT / 2);
 		if (bricks == 0)
 			add(win);
 		if (turns == 0)
@@ -115,7 +115,7 @@ public class Breakout extends GraphicsProgram {
 				remove(ball);
 				ball = null;
 				turns--;
-				showTurns.setLabel("Осталось попыток: "+turns);
+				showTurns.setLabel("Attempts left: "+turns);
 			}
 		}
 	}
@@ -123,9 +123,9 @@ public class Breakout extends GraphicsProgram {
 	private void setup() {
 		createBricks();
 		createPaddle();
-		showBricks = new GLabel("Осталось кирпичей: " + bricks);
+		showBricks = new GLabel("Bricks left: " + bricks);
 		showBricks.setFont("Times New Roman-10");
-		showTurns = new GLabel("Осталось попыток: " + turns);
+		showTurns = new GLabel("Attempts left: " + turns);
 		showTurns.setFont("Times New Roman-10");
 		add(showBricks, 10, 10);
 		add(showTurns, 10, 30);
@@ -151,7 +151,7 @@ public class Breakout extends GraphicsProgram {
 		} else if (collObj != null && collObj != showBricks && collObj != showTurns) {
 			remove(collObj);
 			bricks--;
-			showBricks.setLabel("Осталось кирпичей: " + bricks);
+			showBricks.setLabel("Bricks left: " + bricks);
 			vy = -vy;
 		}
 
