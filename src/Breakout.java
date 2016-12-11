@@ -76,7 +76,7 @@ public class Breakout extends GraphicsProgram {
 	public void run() {
 		this.setSize(WIDTH, HEIGHT);
 		setup();
-		GLabel start = new GLabel("Press LEFT MOUSE BUTTON for start",  WIDTH / 2 - 60, HEIGHT / 2-BALL_RADIUS*3);
+		GLabel start = new GLabel("Press LEFT MOUSE BUTTON for start",  WIDTH / 2 - 100, HEIGHT / 2-BALL_RADIUS*3);
 		for (int i = NTURNS; i > 0; i--) {
 			if(bricks>0){
 			drawBall();
@@ -94,8 +94,8 @@ public class Breakout extends GraphicsProgram {
 	}
 
 	private void gameOver() {
-		GLabel win = new GLabel("You win", WIDTH / 2 - 50, HEIGHT / 2);
-		GLabel lose = new GLabel("No more attempts. You lose", WIDTH / 2 - 110, HEIGHT / 2);
+		GLabel win = new GLabel("You win", WIDTH / 2 - 10, HEIGHT / 2);
+		GLabel lose = new GLabel("No more attempts. You lose", WIDTH / 2 - 80, HEIGHT / 2);
 		if (bricks == 0)
 			add(win);
 		if (turns == 0)
@@ -134,11 +134,11 @@ public class Breakout extends GraphicsProgram {
 		createBricks();
 		createPaddle();
 		showBricks = new GLabel("Bricks left: " + bricks);
-		showBricks.setFont("Times New Roman-10");
+		showBricks.setFont("Times New Roman-20");
 		showTurns = new GLabel("Attempts left: " + turns);
-		showTurns.setFont("Times New Roman-10");
-		add(showBricks, 10, 10);
-		add(showTurns, 10, 30);
+		showTurns.setFont("Times New Roman-20");
+		add(showBricks, 10, 25);
+		add(showTurns, WIDTH-130, 25);
 		addMouseListeners();
 		ballSpeed();
 
